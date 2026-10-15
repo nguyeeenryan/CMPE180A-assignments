@@ -31,7 +31,9 @@ int main() {
     std::cout << "--c = " << --c << '\n';
 
     BigInt zero(0);
+    BigInt uno(1);
     std::cout << "!zero = " << !zero << '\n';
+    std::cout << "!uno = " << !uno << '\n';
 
     BigInt fromInts(std::vector<int>{-1, 2, 3});
     BigInt fromChars(std::vector<char>{
