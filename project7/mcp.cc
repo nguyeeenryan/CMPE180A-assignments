@@ -83,4 +83,28 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    // check whether any target already exists
+    for (const string& target : targetFiles) {
+
+        try {
+            if (fs::exists(target)) {
+                cerr << "error: Target file already exists: " << target << endl;
+                return 1;
+            }
+        }
+        catch (const fs::filesystem_error& e) {
+            cerr << "error checking target file " << target << ": " << e.what() << endl;
+            return 1;
+        }
+    }
+
+
+
+
+
+
+
+    
+
+    return 0;
 }
