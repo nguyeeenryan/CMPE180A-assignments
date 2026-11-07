@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
     vector<string> targetFiles;
     set<string> uniqueTargets;
 
-    // parse commandline arguments
+    // parse commandline arguments, make sure that filenames follower after specifier
     for (int i = 1; i < argc; i++) {
 
         string arg = argv[i];
@@ -60,7 +60,27 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    // check if correct specifiers were used
+    if (sourceFile.empty()) {
+        cerr << "error: No source file specified. Use -s filename." << endl;
+        return 1;
+    }
 
+    if (targetFiles.empty()) {
+        cerr << "error: No target files specified. Use -t filename." << endl;
+        return 1;
+    }
 
-    return 0;
+    // check whether source exists
+    try {
+        if (!fs::exists(sourceFile)) {
+            cerr << "error: Source file does not exist: " << sourceFile << endl;
+            return 1;
+        }
+    }
+    catch (const fs::filesystem_error& e) {
+        cerr << "error checking source file: " << e.what() << endl;
+        return 1;
+    }
+
 }
