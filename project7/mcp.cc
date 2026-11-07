@@ -15,13 +15,13 @@ int main(int argc, char* argv[]) {
     vector<string> targetFiles;
     set<string> uniqueTargets;
 
-    // parse commandline arguments, make sure that filenames follower after specifier
+    // parse commandline arguments, make sure that filenames follow after specifier
     for (int i = 1; i < argc; i++) {
 
         string arg = argv[i];
 
         if (arg == "-s") {
-
+            // check specifier and argument after
             if (i + 1 >= argc || argv[i + 1][0] == '-') {
                 cerr << "error: Missing source filename after -s." << endl;
                 return 1;
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
                 return 1;
             }
 
-            // skip filename and move to next specifier
+            // skip filename and move to next specifier for the next loop
             sourceFile = argv[++i]; 
 
         }
@@ -143,12 +143,24 @@ int main(int argc, char* argv[]) {
 
 
 
-        // copy file contents
-        destination << source.rdbuf();
+        // copy file contents using a buffer
+        char buffer[4096];
 
-        // check for copy/write errors
-        if (source.bad() || destination.fail()) {
-            cerr << "error: Failed to copy file to: " << target << endl;
+        while (source.read(buffer, sizeof(buffer)) || source.gcount() > 0) {
+            destination.write(buffer, source.gcount());
+        }
+
+        // check for read errors
+        if (!source.eof()) {
+            cerr << "Error: Failed to read source file: " << sourceFile << endl;
+
+            destination.close();
+            return 1;
+        }
+
+        // check for write errors
+        if (!destination.good()) {
+            cerr << "Error: Failed to write target file: " << target << endl;
 
             destination.close();
             return 1;
