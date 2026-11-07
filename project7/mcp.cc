@@ -101,10 +101,68 @@ int main(int argc, char* argv[]) {
 
 
 
+    // open source file in binary mode
+    ifstream source(sourceFile, ios::binary);
+
+    if (!source.is_open()) {
+        cerr << "error: Cannot open source file: " << sourceFile << endl;
+        return 1;
+    }
+
+    // check that source is a regular file
+    if (!fs::is_regular_file(sourceFile)) {
+        cerr << "error: Source is not a regular file: " << sourceFile << endl;
+        return 1;
+    }
 
 
 
-    
+
+
+    // loop through every target and copy source into them
+    for (const string& target : targetFiles) {
+
+        // reset source before each copy
+        source.clear();
+        source.seekg(0, ios::beg);
+
+        if (!source.good()) {
+            cerr << "error: Could not read source file: " << sourceFile << endl;
+            return 1;
+        }
+
+        // create target file in binary mode
+        ofstream destination(target, ios::binary);
+
+        if (!destination.is_open()) {
+            cerr << "error: Cannot create target file: " << target << endl;
+            return 1;
+        }
+
+
+
+
+
+        // copy file contents
+        destination << source.rdbuf();
+
+        // check for copy/write errors
+        if (source.bad() || destination.fail()) {
+            cerr << "error: Failed to copy file to: " << target << endl;
+
+            destination.close();
+            return 1;
+        }
+
+        destination.close();
+
+        if (destination.fail()) {
+            cerr << "error: Failed to close target file: " << target << endl;
+            return 1;
+        }
+    }
+
+    source.close();
 
     return 0;
 }
