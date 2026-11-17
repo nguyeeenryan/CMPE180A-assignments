@@ -23,22 +23,20 @@ private:
     int size;
 
 public:
-    // Constructor
+    // Constructor and destructor
     CircularLinkedList();
-
-    // Destructor
     ~CircularLinkedList();
 
     // Insert a node relative to head
     void push(int i, ClockDirection d);
 
-    // Remove head and move head in specified direction
-    int pop(int i, ClockDirection d);
+    // Remove head and make new head in specified direction
+    int pop(ClockDirection d);
 
-    // Return head value without modifying the list
+    // Return head value without modifying list
     int peek();
 
-    // Rotate head n positions
+    // Rotate head n positions in specified direction
     void rotate(unsigned int n, ClockDirection d);
 
     // Print list clockwise
